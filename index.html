@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intersection Observer</title>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+    section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s;
+      font-size: 1em;
+      border-bottom: 5px solid #ddd;
+    }
+
+    section:nth-child(even) {
+      background: #f1f1f1;
+    }
+
+    #anchor {
+      position: fixed;
+      left: 30px;
+      top: 30px;
+    }
+    section.new {
+      background: #f1f1f1;
+      font-size: 5em;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <div id="anchor">anchor</div>
+  <div id="scrollArea">
+    <section data-index="1">
+      section 1
+    </section>
+    <section data-index="2">
+      section 2
+    </section>
+    <section data-index="3">
+      section 3
+    </section>
+    <section data-index="4">
+      section 4
+    </section>
+    <section data-index="5">
+      section 5
+    </section>
+    <section data-index="6">
+      section 6
+    </section>
+    <section data-index="7">
+      section 7
+    </section>
+    <section data-index="8">
+      section 8
+    </section>
+  </div>
+  <script>
+    var anchor = document.querySelector('#anchor');
+    let boxElements;
+    let currentSection;
+    let pointer = 0.3; // 옵저버 실행 시점 %
+
+    // Set things up
+    window.addEventListener("load", (event) => {
+      boxElements = document.querySelectorAll("#scrollArea section");
+      createObserver();
+    }, false);
+
+    function createObserver() {
+      let observer;
+      boxElements.forEach(function(section) { 
+        let observer = new IntersectionObserver(fnCallback, {threshold: pointer});
+        observer.observe(section);
+      });
+    }
+
+
+
+    function fnCallback(entries, observer) {
+     // console.log("콜백실행");
+     // console.log("여긴언제???");
+      entries.forEach((entry) => {
+        
+        if (entry.intersectionRatio <= pointer) {
+          // 화면에 안보임.
+          console.log("화면에 안보임", entry.target, entry.intersectionRatio);
+          entry.target.classList.remove("new");
+          
+        } else {
+          // 화면에 보임.
+          console.log("화면에 보임", entry.target, entry.intersectionRatio);
+          entry.target.classList.add("new"); 
+          currentSection = entry.target.dataset.index;
+          anchor.innerText = `currentSection: ${currentSection}`;
+        }
+        
+        
+      });
+    }
+
+
+  </script>
+</body>
+</html>
